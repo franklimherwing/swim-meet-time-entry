@@ -1,0 +1,45 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #0b1f2a;
+  color: white;
+  text-align: center;
+}
+
+h1 {
+  margin: 15px;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 80px 120px 120px 120px;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+input {
+  font-size: 20px;
+  padding: 10px;
+  text-align: center;
+  width: 100px;
+}
+
+.avg {
+  font-size: 22px;
+  font-weight: bold;
+  background: #1e3a4c;
+  padding: 10px;
+}
+
+.row {
+  display: contents;
+}
+
+.controls {
+  margin-top: 20px;
+}
+
+button {
+  font-size: 18px;
+  padding: 10px 20px;
+}
