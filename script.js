@@ -1,26 +1,26 @@
-const VERSION = "2.1";
+const VERSION = "2.2";
 document.getElementById("version").innerText = "Version " + VERSION;
 
 const lanes = 12;
 const container = document.getElementById("table");
 
-// build table
+// build UI
 for (let i = 1; i <= lanes; i++) {
   const row = document.createElement("div");
   row.className = "row";
 
   row.innerHTML = `
     <div class="lane">${i}</div>
-    <input id="t1-${i}" data-lane="${i}" data-col="1" inputmode="decimal" />
-    <input id="t2-${i}" data-lane="${i}" data-col="2" inputmode="decimal" />
-    <div class="avg" id="avg-${i}">0.00</div>
+    <input id="t1-${i}" data-lane="${i}" data-col="1" />
+    <input id="t2-${i}" data-lane="${i}" data-col="2" />
+    <div class="avg" id="avg-${i}">0.000</div>
   `;
 
   container.appendChild(row);
 }
 
 /* -------------------------
-   🔊 BEEP
+   BEEP
 --------------------------*/
 function beep() {
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -39,16 +39,16 @@ function beep() {
 }
 
 /* -------------------------
-   FORMAT TO 2 DECIMALS
+   FORMAT (3 decimals)
 --------------------------*/
 function format(val) {
   const num = parseFloat(val);
   if (isNaN(num)) return null;
-  return num.toFixed(2);
+  return num.toFixed(3); // 🔥 now 3 digits
 }
 
 /* -------------------------
-   CALC + TRACK BEST
+   BEST LANE TRACKER
 --------------------------*/
 function updateBest() {
   let bestLane = null;
@@ -78,31 +78,26 @@ function updateBest() {
    CALC
 --------------------------*/
 function calc(lane) {
-  const t1El = document.getElementById(`t1-${lane}`);
-  const t2El = document.getElementById(`t2-${lane}`);
-  const avgEl = document.getElementById(`avg-${lane}`);
-
-  const t1 = parseFloat(t1El.value);
-  const t2 = parseFloat(t2El.value);
+  const t1 = parseFloat(document.getElementById(`t1-${lane}`).value);
+  const t2 = parseFloat(document.getElementById(`t2-${lane}`).value);
 
   if (!isNaN(t1) && !isNaN(t2)) {
-    const avg = ((t1 + t2) / 2);
-    avgEl.innerText = avg.toFixed(2); // 🔥 always 2 digits
+    const avg = (t1 + t2) / 2;
 
-    // beep only once per lane completion
-    if (!avgEl.dataset.done) {
+    document.getElementById(`avg-${lane}`).innerText =
+      avg.toFixed(3); // 🔥 3 decimal places
+
+    if (!document.getElementById(`avg-${lane}`).dataset.done) {
       beep();
-      avgEl.dataset.done = "true";
+      document.getElementById(`avg-${lane}`).dataset.done = "true";
     }
 
     updateBest();
-  } else {
-    avgEl.dataset.done = "";
   }
 }
 
 /* -------------------------
-   INPUT HANDLER
+   INPUT HANDLER (NO RESTRICTION)
 --------------------------*/
 document.addEventListener("input", (e) => {
   if (e.target.tagName !== "INPUT") return;
@@ -114,7 +109,7 @@ document.addEventListener("input", (e) => {
 
   const value = e.target.value;
 
-  // auto advance after decimal input starts
+  // keep auto advance
   if (value.includes(".") && value.split(".")[1]?.length >= 1) {
     setTimeout(() => {
       if (col === 1) {
@@ -136,7 +131,7 @@ function resetHeat() {
   for (let i = 1; i <= lanes; i++) {
     document.getElementById(`t1-${i}`).value = "";
     document.getElementById(`t2-${i}`).value = "";
-    document.getElementById(`avg-${i}`).innerText = "0.00";
+    document.getElementById(`avg-${i}`).innerText = "0.000";
     document.getElementById(`avg-${i}`).dataset.done = "";
     document.getElementById(`avg-${i}`).classList.remove("best");
   }
