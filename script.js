@@ -1,4 +1,4 @@
-const VERSION = "2.0";
+const VERSION = "2.1";
 document.getElementById("version").innerText = "Version " + VERSION;
 
 const lanes = 12;
@@ -19,29 +19,93 @@ for (let i = 1; i <= lanes; i++) {
   container.appendChild(row);
 }
 
-// sanitize input
-function sanitize(val) {
-  return val.replace(/[^0-9.]/g, "");
+/* -------------------------
+   🔊 BEEP
+--------------------------*/
+function beep() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = "sine";
+  osc.frequency.value = 880;
+  gain.gain.value = 0.1;
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start();
+  osc.stop(ctx.currentTime + 0.12);
 }
 
-// calculate
-function calc(lane) {
-  const t1 = parseFloat(document.getElementById(`t1-${lane}`).value);
-  const t2 = parseFloat(document.getElementById(`t2-${lane}`).value);
+/* -------------------------
+   FORMAT TO 2 DECIMALS
+--------------------------*/
+function format(val) {
+  const num = parseFloat(val);
+  if (isNaN(num)) return null;
+  return num.toFixed(2);
+}
 
-  if (!isNaN(t1) && !isNaN(t2)) {
-    document.getElementById(`avg-${lane}`).innerText =
-      ((t1 + t2) / 2).toFixed(2);
+/* -------------------------
+   CALC + TRACK BEST
+--------------------------*/
+function updateBest() {
+  let bestLane = null;
+  let bestTime = Infinity;
+
+  for (let i = 1; i <= lanes; i++) {
+    const avg = parseFloat(document.getElementById(`avg-${i}`).innerText);
+
+    if (!isNaN(avg) && avg > 0) {
+      if (avg < bestTime) {
+        bestTime = avg;
+        bestLane = i;
+      }
+    }
+  }
+
+  for (let i = 1; i <= lanes; i++) {
+    document.getElementById(`avg-${i}`).classList.remove("best");
+  }
+
+  if (bestLane !== null) {
+    document.getElementById(`avg-${bestLane}`).classList.add("best");
   }
 }
 
 /* -------------------------
-   AUTO ADVANCE (kept stable)
+   CALC
+--------------------------*/
+function calc(lane) {
+  const t1El = document.getElementById(`t1-${lane}`);
+  const t2El = document.getElementById(`t2-${lane}`);
+  const avgEl = document.getElementById(`avg-${lane}`);
+
+  const t1 = parseFloat(t1El.value);
+  const t2 = parseFloat(t2El.value);
+
+  if (!isNaN(t1) && !isNaN(t2)) {
+    const avg = ((t1 + t2) / 2);
+    avgEl.innerText = avg.toFixed(2); // 🔥 always 2 digits
+
+    // beep only once per lane completion
+    if (!avgEl.dataset.done) {
+      beep();
+      avgEl.dataset.done = "true";
+    }
+
+    updateBest();
+  } else {
+    avgEl.dataset.done = "";
+  }
+}
+
+/* -------------------------
+   INPUT HANDLER
 --------------------------*/
 document.addEventListener("input", (e) => {
   if (e.target.tagName !== "INPUT") return;
-
-  e.target.value = sanitize(e.target.value);
 
   const lane = parseInt(e.target.dataset.lane);
   const col = parseInt(e.target.dataset.col);
@@ -50,7 +114,7 @@ document.addEventListener("input", (e) => {
 
   const value = e.target.value;
 
-  // move when decimal input starts forming
+  // auto advance after decimal input starts
   if (value.includes(".") && value.split(".")[1]?.length >= 1) {
     setTimeout(() => {
       if (col === 1) {
@@ -61,7 +125,7 @@ document.addEventListener("input", (e) => {
           document.getElementById(`t1-${next}`).focus();
         }
       }
-    }, 100);
+    }, 80);
   }
 });
 
@@ -73,7 +137,7 @@ function resetHeat() {
     document.getElementById(`t1-${i}`).value = "";
     document.getElementById(`t2-${i}`).value = "";
     document.getElementById(`avg-${i}`).innerText = "0.00";
+    document.getElementById(`avg-${i}`).dataset.done = "";
+    document.getElementById(`avg-${i}`).classList.remove("best");
   }
-
-  document.getElementById("t1-1").focus();
 }
