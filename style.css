@@ -3,39 +3,45 @@ body {
   background: #0b1f2a;
   color: white;
   text-align: center;
-  margin: 0;
 }
 
 h1 {
-  margin-top: 10px;
+  margin: 10px;
 }
 
 h3 {
-  margin-bottom: 10px;
   color: #9ad1ff;
+  margin-bottom: 10px;
 }
 
-.header-row {
+/* reset buttons */
+.top-controls,
+.controls {
+  margin: 10px 0;
+}
+
+button {
+  font-size: 18px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+/* TABLE STYLE (back to v1.1 feel) */
+.container {
   display: grid;
   grid-template-columns: 80px 120px 120px 120px;
   justify-content: center;
   gap: 10px;
-  font-weight: bold;
-  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .row {
-  display: grid;
-  grid-template-columns: 80px 120px 120px 120px;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 8px;
-  align-items: center;
+  display: contents;
 }
 
 input {
-  font-size: 22px;
-  padding: 8px;
+  font-size: 20px;
+  padding: 10px;
   text-align: center;
   width: 110px;
   border-radius: 6px;
@@ -46,20 +52,6 @@ input {
   font-size: 22px;
   font-weight: bold;
   background: #1e3a4c;
-  padding: 8px;
+  padding: 10px;
   border-radius: 6px;
-}
-
-.bad {
-  background: #6b1e1e !important;
-}
-
-.controls {
-  margin-top: 20px;
-}
-
-button {
-  font-size: 18px;
-  padding: 10px 20px;
-  cursor: pointer;
 }
