@@ -5,25 +5,39 @@ body {
   text-align: center;
 }
 
+/* TOP BAR LAYOUT */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+}
+
+/* MIC BUTTON */
+.mic-btn {
+  font-size: 22px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+/* RESET GROUP RIGHT SIDE */
+.reset-group {
+  display: flex;
+  gap: 8px;
+}
+
+/* TITLE */
 h1 {
-  margin: 10px;
+  margin: 0;
+  font-size: 22px;
 }
 
 h3 {
+  margin: 0;
   color: #9ad1ff;
-  margin-bottom: 10px;
-}
-
-/* RESET BUTTONS */
-.top-controls,
-.controls {
-  margin: 10px 0;
-}
-
-button {
-  font-size: 18px;
-  padding: 10px 20px;
-  cursor: pointer;
+  font-size: 14px;
 }
 
 /* TABLE */
@@ -32,21 +46,20 @@ button {
   flex-direction: column;
   gap: 6px;
   align-items: center;
+  margin-top: 10px;
 }
 
-/* ROW = horizontal layout */
 .row {
   display: flex;
   align-items: center;
-  gap: 6px; /* tiny space between boxes */
+  gap: 6px;
 }
 
-/* lane number */
 .lane {
   width: 60px;
 }
 
-/* input boxes */
+/* INPUTS (IMPORTANT FOR PHONE KEYBOARD) */
 input {
   font-size: 20px;
   padding: 8px;
@@ -54,9 +67,12 @@ input {
   width: 110px;
   border-radius: 6px;
   border: none;
+
+  /* MOBILE NUMERIC KEYBOARD */
+  inputmode: decimal;
+  -webkit-appearance: none;
 }
 
-/* average */
 .avg {
   font-size: 22px;
   font-weight: bold;
