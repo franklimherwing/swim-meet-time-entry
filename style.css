@@ -26,7 +26,14 @@ button {
   cursor: pointer;
 }
 
-/* TABLE STYLE (back to v1.1 feel) */
+/* small version text inside button */
+.btn-version {
+  font-size: 10px;
+  opacity: 0.6;
+  margin-left: 6px;
+}
+
+/* table layout */
 .container {
   display: grid;
   grid-template-columns: 80px 120px 120px 120px;
